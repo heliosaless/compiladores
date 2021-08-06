@@ -1,0 +1,41 @@
+package Translation.Translate;
+import Semantic.SyntaxTree.*;
+import Semantic.Symbol.Symbol;
+import Translation.Translate.TranslateExp;
+
+public interface TypeTranslationVisitor {
+  public TranslateExp visit(Program n);
+  public TranslateExp visit(MainClass n);
+  public TranslateExp visit(ClassDeclSimple n);
+  public TranslateExp visit(ClassDeclExtends n);
+  public TranslateExp visit(VarDecl n);
+  public TranslateExp visit(MethodDecl n);
+  public TranslateExp visit(Formal n);
+  public TranslateExp visit(IntArrayType n);
+  public TranslateExp visit(BooleanType n);
+  public TranslateExp visit(IntegerType n);
+  public TranslateExp visit(IdentifierType n);
+  public TranslateExp visit(Block n);
+  public TranslateExp visit(If n);
+  public TranslateExp visit(While n);
+  public TranslateExp visit(Print n);
+  public TranslateExp visit(Assign n);
+  public TranslateExp visit(ArrayAssign n);
+  public TranslateExp visit(And n);
+  public TranslateExp visit(LessThan n);
+  public TranslateExp visit(Plus n);
+  public TranslateExp visit(Minus n);
+  public TranslateExp visit(Times n);
+  public TranslateExp visit(ArrayLookup n);
+  public TranslateExp visit(ArrayLength n);
+  public TranslateExp visit(Call n);
+  public TranslateExp visit(IntegerLiteral n);
+  public TranslateExp visit(True n);
+  public TranslateExp visit(False n);
+  public TranslateExp visit(IdentifierExp n);
+  public TranslateExp visit(This n);
+  public TranslateExp visit(NewArray n);
+  public TranslateExp visit(NewObject n);
+  public TranslateExp visit(Not n);
+  public TranslateExp visit(Identifier n);
+}

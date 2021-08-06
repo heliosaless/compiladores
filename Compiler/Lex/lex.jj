@@ -1,0 +1,233 @@
+PARSER_BEGIN(MyParser)
+package Lex;
+import Semantic.SyntaxTree.*;
+
+public class MyParser {
+  public static void main(String args[]) throws ParseException {
+    MyParser parser = new MyParser(System.in);
+    parser.Goal();
+  }
+
+}
+
+PARSER_END(MyParser)
+
+SKIP: {
+	" "
+|	"\t"
+|	"\n"
+| "\r"
+|	<"//" (~["\n","\r"])* ["\n","\r"]>
+|	<"/*" >
+}
+
+
+TOKEN :
+{
+  <CLASS: "class">
+|	<PUBLIC: "public">
+|	<STATIC: "static">
+|	<VOID: "void">
+|	<MAIN: "main">
+|	<STRING: "String">
+|	<LSQUAREBRACKET: "[">
+|	<RSQUAREBRACKET: "]">
+|	<EXTENDS: "extends">
+|	<RETURN: "return">
+|	<INT: "int">
+|	<BOOLEAN: "boolean">
+}
+
+
+TOKEN: {
+	<LCURLYBRACKET: "{">	
+|	<RCURLYBRACKET: "}">
+|	<SEMICOLON: ";">
+|	<EQUAL: "=">
+|	<LPARENTHESIS: "(">
+|	<RPARENTHESIS: ")">
+|	<IF: "if">
+|	<ELSE: "else">
+|	<WHILE: "while">
+|	<PRINTLN: "System.out.println">
+}
+
+TOKEN: {
+	<AND: "&&">
+|	<LESSTHAN: "<" >
+|	<PLUS: "+">
+|	<MINUS: "-">
+|	<MULTIPLY: "*">
+|	<DOT: ".">
+|	<LENGTH: "length">
+|	<COMMA: ",">
+|	<TRUE: "true">
+|	<FALSE: "false">
+|	<THIS: "this">
+|	<NEW: "new">
+|	<NOT: "!">
+|  <IDENTIFIER: ["a"-"z", "A"-"Z"](["a"-"z", "A"-"Z", "0"-"9", "_"])*> 
+|	<INTEGER_LITERAL: (["0"-"9"])+ >
+}
+
+
+Program Goal():{
+  MainClass main;
+  ClassDecl cd;
+  ClassDeclList cdl = new ClassDeclList();
+}
+{
+  main = MainClass() (cd = ClassDeclaration() {cdl.addElement(cd);})* <EOF>
+
+  {return new Program(main, cdl);}
+}
+
+MainClass  MainClass():{ 
+  Identifier a;
+  Identifier b;
+  Statement stm;
+}
+{
+	"class" a = Identifier() "{" "public" "static" "void" "main" "(" "String" "[" "]" b = Identifier() ")" "{" stm = Statement() "}" "}"
+
+  {return new MainClass(a,b,stm);}
+}
+
+ClassDecl ClassDeclaration():{
+  Identifier a;
+  Identifier b;
+  VarDecl var;
+  MethodDecl method;
+  VarDeclList varlist = new VarDeclList();
+  MethodDeclList methodlist = new MethodDeclList();
+}
+{
+  // "class" Identifier() ( "extends" Identifier() )? "{" ( VarDeclaration() )* ( MethodDeclaration() )* "}"
+  LOOKAHEAD(3)
+  "class" a = Identifier() "{" ( var = VarDeclaration() {varlist.addElement(var);} )* ( method = MethodDeclaration() {methodlist.addElement(method);} )* "}" 
+    {return new ClassDeclSimple(a, varlist, methodlist);}
+  
+  | "class" a = Identifier() "extends" b = Identifier() "{" ( var = VarDeclaration() {varlist.addElement(var);} )* ( method = MethodDeclaration() {methodlist.addElement(method);} )* "}" 
+    {return new ClassDeclExtends(a, b, varlist, methodlist);}
+}
+
+VarDecl VarDeclaration():{
+  Type at;
+  Identifier ai;
+}
+{
+  at = Type() ai = Identifier() ";"
+  {return new VarDecl(at, ai);}
+
+}
+
+MethodDecl MethodDeclaration():
+{
+  Type at; 
+  Identifier ai; 
+  FormalList afl = new FormalList(); 
+  VarDeclList avl = new VarDeclList(); 
+  StatementList asl = new StatementList(); 
+  Exp ae;
+  Type at2;
+  Identifier ai2;
+  Type at3;
+  Identifier ai3;
+  VarDecl av;
+  Statement stm;
+
+
+
+}
+{
+  "public" at = Type() ai = Identifier() "(" ( at2 =Type() ai2 = Identifier() {afl.addElement(new Formal(at2, ai2));} ( "," at3 = Type() ai3 =Identifier() {afl.addElement(new Formal(at3, ai3));} )* )? ")" "{" ( LOOKAHEAD(2) av = VarDeclaration() {avl.addElement(av);})* ( stm = Statement() {asl.addElement(stm);})* "return" ae = Expression() ";" "}"
+  {return new MethodDecl(at, ai, afl, avl, asl, ae); }
+}
+
+Type Type():
+{
+  Identifier id1;
+}
+{
+  LOOKAHEAD(2) "int" "[" "]" {return new IntArrayType(); }
+  | "boolean" {return new BooleanType();}
+  | "int"  {return new IntegerType();}
+  | id1 = Identifier() { return new IdentifierType(id1.toString()); }
+}
+
+Identifier Identifier():
+{
+  Token id;
+}
+{
+  id = <IDENTIFIER> {return new Identifier(id.image);}
+}
+
+Statement Statement():
+{
+  Statement stm1;
+  StatementList stmList = new StatementList();
+  Exp exp1;
+  Statement stm2;
+  Identifier id1;
+  Exp exp2;
+}
+{
+  "{" ( stm1 = Statement() {stmList.addElement(stm1);} )* "}"
+  {return new Block(stmList);}
+|	"if" "(" exp1 = Expression() ")" stm1 = Statement() "else" stm2 = Statement()
+{return new If(exp1, stm1, stm2);}
+|	"while" "(" exp1 = Expression() ")" stm1 = Statement()
+{return new While(exp1, stm1);}
+|	"System.out.println" "(" exp1 = Expression() ")" ";"
+{return new Print(exp1);}
+|	LOOKAHEAD(2) id1 = Identifier() "=" exp1 = Expression() ";"
+{return new Assign(id1, exp1);}
+|	LOOKAHEAD(2) id1 = Identifier() "[" exp1 = Expression() "]" "=" exp2 =Expression() ";"
+{return new ArrayAssign(id1, exp1, exp2);}
+}
+
+Exp ExpressionPrime(Exp a):
+{
+  Exp exp1;
+  Exp exp2;
+  Exp exp3;
+  Identifier id1;
+  ExpList expList = new ExpList();
+}
+
+{
+    "&&" exp1 = Expression() exp2 = ExpressionPrime(new And(a, exp1)) {return exp2;}
+  | "<" exp1 = Expression() exp2 = ExpressionPrime(new LessThan(a, exp1)) {return exp2;}
+  | "+" exp1 = Expression() exp2 = ExpressionPrime(new Plus(a, exp1)) {return exp2;}
+  | "-" exp1 = Expression() exp2 = ExpressionPrime(new Minus(a, exp1)) {return exp2;}
+  | "*" exp1 = Expression() exp2 = ExpressionPrime(new Times(a,exp1)) {return exp2;}
+  |	"[" exp1 = Expression() "]" exp2 = ExpressionPrime(new ArrayLookup(a, exp1)) {return exp2;}
+  |	LOOKAHEAD(2) "." "length" exp1 = ExpressionPrime(new ArrayLength(a)) {return exp1;}
+  |	LOOKAHEAD(2) "." id1 = Identifier() "(" ( exp1 = Expression() {expList.addElement(exp1);} ( "," exp2 = Expression() {expList.addElement(exp2);} )* )? ")" exp3 = ExpressionPrime(new Call(a, id1, expList)) {return exp3;}
+  | {} {return a;}
+}
+
+
+Exp Expression():
+{
+  Token i1;
+  String s1;
+  String s2;
+  Exp exp1;
+  Exp exp2;
+  Identifier id1;
+  
+
+}
+{
+	i1 = <INTEGER_LITERAL>  exp1 = ExpressionPrime(new IntegerLiteral(Integer.parseInt(i1.image))) {return exp1;}
+|	"true" exp1 = ExpressionPrime(new True()) {return exp1; }
+|	"false" exp1 = ExpressionPrime(new False()) {return exp1; }
+|	id1 = Identifier() exp1 = ExpressionPrime(new IdentifierExp(id1.toString())) {return exp1;}
+|	"this" exp1 = ExpressionPrime(new This()) {return exp1; }
+|	LOOKAHEAD(2) "new" "int" "[" exp1 = Expression() "]" exp2 = ExpressionPrime(new NewArray(exp1)) {return exp2;} 
+|	LOOKAHEAD(2) "new" id1 = Identifier() "(" ")" exp1 = ExpressionPrime(new NewObject(id1)) {return exp1;}
+|	"!" exp1 = Expression() exp2 = ExpressionPrime(new Not(exp1)) {return exp2;}
+|	"(" exp1 = Expression() ")" exp2 = ExpressionPrime(exp1) {return exp2;}
+}
