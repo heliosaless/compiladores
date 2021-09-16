@@ -14,7 +14,7 @@ public class Label  {
    * language output.
    */
    public String toString() {return name;}
-
+   
   /**
    * Makes a new label that prints as "name".
    * Warning: avoid repeated calls to <tt>new Label(s)</tt> with

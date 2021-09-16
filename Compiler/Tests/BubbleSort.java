@@ -19,7 +19,7 @@ class BBS{
 	int aux01 ;
 	aux01 = this.Init(sz);
 	aux01 = this.Print();
-	System.out.println(99999);
+	// System.out.println(99999);
 	aux01 = this.Sort();
 	aux01 = this.Print();
 	return 0 ;
@@ -65,7 +65,7 @@ class BBS{
 	int j ;
 	j = 0 ;
 	while (j < (size)) {
-	    System.out.println(number[j]);
+	    // System.out.println(number[j]);
 	    j = j + 1 ;
 	}
 	return 0 ;

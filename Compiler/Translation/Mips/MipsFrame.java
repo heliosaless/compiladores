@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.ListIterator;
+
+import Assem.InstrList;
 import Semantic.Symbol.Symbol;
 import Translation.Temp.Temp;
 import Translation.Temp.Label;
@@ -60,23 +62,10 @@ public class MipsFrame extends Frame {
     }
 
     public MipsFrame() {
-		// if (this.name != null) name = Symbol.symbol();
 	}
-	// public MipsFrame(Symbol n){
-	// 	// if (this.name != null) name = Symbol.symbol(this.name + "." + name);
-	// 	Integer count = functions.get(n);
-	// if (count == null) {
-	//     count = new Integer(0);
-	//     name = new Label(n);
-	// } else {
-	//     count = new Integer(count.intValue() + 1);
-	//     name = new Label(n + "." + count);
-	// }
 
-	// }
-
-    private static HashMap<Symbol,Integer> functions
-	= new HashMap<Symbol,Integer>();
+    private static HashMap<Symbol,Integer> functions = new HashMap<Symbol,Integer>();
+	
     private MipsFrame(Symbol n, List<Boolean> f) {
 	Integer count = functions.get(n);
 	if (count == null) {
@@ -172,6 +161,10 @@ public class MipsFrame extends Frame {
 	// registers that a callee may use without preserving
 	callerSaves = { T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, V0, V1 };
 
+	public Temp[] argRegsGetter(){
+		return argRegs;	
+	}
+	
     static final Temp FP = new Temp(); // virtual frame pointer (eliminated)
     public Temp FP() { return FP; }
     public Temp RV() { return V0; }
@@ -261,19 +254,32 @@ public class MipsFrame extends Frame {
 	tempMap.put(S8,   "$fp");
 	tempMap.put(RA,   "$ra");
     }
+
+	public HashMap<Temp,String> tempMapGetter(){
+		return tempMap;
+	}
     public String tempMap(Temp temp) {
 	return tempMap.get(temp);
     }
 
     int maxArgOffset = 0;
 
-    // public List<Assem.Instr> codegen(List<Translation.Tree.Stm> stms) {
-	// List<Assem.Instr> insns = new java.util.LinkedList<Assem.Instr>();
-	// Codegen cg = new Codegen(this, insns.listIterator());
-	// for (java.util.Iterator<Translation.Tree.Stm> s = stms.iterator(); s.hasNext(); )
-	//     s.next().accept(cg);
-	// return insns;
-    // }
+    public List<Assem.Instr> codegen(List<Translation.Tree.Stm> stms) {
+	List<Assem.Instr> insns = new java.util.LinkedList<Assem.Instr>();
+	Codegen cg = new Codegen(this, insns.listIterator());
+	for (java.util.Iterator<Translation.Tree.Stm> s = stms.iterator(); s.hasNext(); ) {
+		Translation.Tree.Stm s1 = s.next();
+		// System.out.println("S1 - " + s1);
+		InstrList il = cg.codegen(s1);
+		while (true) {
+			if(il == null) break;
+			insns.add(il.head);
+			if(il.tail == null) break;
+			il = il.tail;
+		}
+	}
+	return insns;
+    }
 
     private static <R> void addAll(java.util.Collection<R> c, R[] a) {
 	for (int i = 0; i < a.length; i++)
@@ -299,6 +305,13 @@ public class MipsFrame extends Frame {
 	addAll(l, callerSaves);
 	calldefs = l.toArray(calldefs);
     }
+
+	public Temp[] calldefsGetter(){
+		return calldefs;	
+	}
+	public Temp[] returnSinkGetter(){
+		return returnSink;	
+	}
 
     private static Translation.Tree.Stm SEQ(Translation.Tree.Stm left, Translation.Tree.Stm right) {
 	if (left == null)
@@ -344,28 +357,31 @@ public class MipsFrame extends Frame {
 	assignCallees(0, body);
     }
 
-    // private static Assem.Instr OPER(String a, Temp[] d, Temp[] s) {
-	// return new Assem.OPER(a, d, s, null);
-    // }
+    private static Assem.Instr OPER(String a, Temp[] d, Temp[] s) {
+		return new Assem.OPER(a, Codegen2.tempListConvert(d), Codegen2.tempListConvert(s), null);
+    }
 
-    // public void procEntryExit2(List<Assem.Instr> body) {
-	// body.add(OPER("#\treturn", null, returnSink));
-    // }
+    public List<Assem.Instr> procEntryExit2(List<Assem.Instr> body) {
+		body.add(OPER("#\treturn", null, returnSink));
+		return body;
+    }
 
-    // public void procEntryExit3(List<Assem.Instr> body) {
-	// int frameSize = maxArgOffset - offset;
-	// ListIterator<Assem.Instr> cursor = body.listIterator();
-	// cursor.add(OPER("\t.text", null, null));
-	// cursor.add(OPER(name + ":", null, null));
-	// cursor.add(OPER(name + "_framesize=" + frameSize, null, null));
-	// if (frameSize != 0) {
-	//     cursor.add(OPER("\tsubu $sp " + name + "_framesize",
-	// 		    new Temp[]{SP}, new Temp[]{SP}));
-	//     body.add(OPER("\taddu $sp " + name + "_framesize",
-	// 		  new Temp[]{SP}, new Temp[]{SP}));
-	// }
-	// body.add(OPER("\tj $ra", null, new Temp[]{RA}));
-    // }
+    public List<Assem.Instr> procEntryExit3(List<Assem.Instr> body) {
+	int frameSize = maxArgOffset - offset;
+	ListIterator<Assem.Instr> cursor = body.listIterator();
+	cursor.add(OPER("\t.text", null, null));
+	cursor.add(OPER(name + ":", null, null));
+	cursor.add(OPER(name + "_framesize=" + frameSize, null, null));
+
+	if (frameSize != 0) {
+	    cursor.add(OPER("\tsubu $sp " + name + "_framesize",
+			    new Temp[]{SP}, new Temp[]{SP}));
+	    body.add(OPER("\taddu $sp " + name + "_framesize",
+			  new Temp[]{SP}, new Temp[]{SP}));
+	}
+	body.add(OPER("\tj $ra", null, new Temp[]{RA}));
+	return body;
+    }
 
     private static Temp[] registers = {};
     {

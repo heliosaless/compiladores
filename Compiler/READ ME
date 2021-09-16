@@ -1,0 +1,19 @@
+javac Semantic/SyntaxTree/*.java  &&
+javac Semantic/Symbol/*.java  &&
+javac Semantic/Visitors/*.java  &&
+cd Lex/  &&
+javacc lex.jj  &&
+cd ..  &&
+javac Lex/*.java  &&
+javac Assem/*.java &&
+javac Translation/Translate/*.java &&
+javac Canon/*.java &&
+javac Translation/Frame/*.java &&
+javac Translation/Mips/*.java &&
+javac Translation/Temp/*.java &&
+javac Translation/Tree/*.java &&
+javac Graph/*.java &&
+javac RegAlloc/*.java &&
+javac FlowGraph/*.java &&
+javac Main.java &&
+java Main < tests/Factorial.java

@@ -1,5 +1,6 @@
 package Translation.Frame;
 import java.util.List;
+import java.util.HashMap;
 
 public abstract class Frame implements Translation.Temp.TempMap {
     public Translation.Temp.Label name;
@@ -14,11 +15,17 @@ public abstract class Frame implements Translation.Temp.TempMap {
     public abstract Translation.Temp.Label badPtr();
     public abstract Translation.Temp.Label badSub();
     public abstract String tempMap(Translation.Temp.Temp temp);
-    // public abstract List<Assem.Instr> codegen(List<Translation.Tree.Stm> stms);
+
+    public abstract List<Assem.Instr> codegen(List<Translation.Tree.Stm> stms);
+    // public abstract Assem.InstrList codegen(Translation.Tree.Stm stms);
     public abstract void procEntryExit1(List<Translation.Tree.Stm> body);
-    // public abstract void procEntryExit2(List<Assem.Instr> body);
-    // public abstract void procEntryExit3(List<Assem.Instr> body);
+    public abstract List<Assem.Instr> procEntryExit2(List<Assem.Instr> body);
+    public abstract List<Assem.Instr> procEntryExit3(List<Assem.Instr> body);
     public abstract Translation.Temp.Temp[] registers();
     // public abstract void spill(List<Assem.Instr> insns, Translation.Temp.Temp[] spills);
     public abstract String programTail(); //append to end of target code
+    public abstract Translation.Temp.Temp[] argRegsGetter();
+    public abstract Translation.Temp.Temp[] calldefsGetter();
+    public abstract Translation.Temp.Temp[] returnSinkGetter();
+    public abstract HashMap<Translation.Temp.Temp,String> tempMapGetter();
 }

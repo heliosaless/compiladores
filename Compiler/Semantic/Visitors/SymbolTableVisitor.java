@@ -78,6 +78,7 @@ public class SymbolTableVisitor implements TypeVisitor {
         classScope.put(Symbol.symbol(idClass), new HashMap<Symbol, Type>());
         methodScope.put(Symbol.symbol(idClass), new HashMap<Symbol, HashMap<Symbol, Type>>());
         paramScope.put(Symbol.symbol(idClass), new HashMap<Symbol, LinkedList<Symbol>>());
+        //classScope.get(Symbol.symbol(n.i.toString())).put(Symbol.symbol(n.i.toString()), new IdentifierType(n.i.s));
 
     }
 
@@ -105,6 +106,7 @@ public class SymbolTableVisitor implements TypeVisitor {
       classScope.put(Symbol.symbol(idClass), new HashMap<Symbol, Type>());
       methodScope.put(Symbol.symbol(idClass), new HashMap<Symbol, HashMap<Symbol, Type>>());
       paramScope.put(Symbol.symbol(idClass), new HashMap<Symbol, LinkedList<Symbol>>());
+      //classScope.get(Symbol.symbol(n.i.toString())).put(Symbol.symbol(n.i.toString()), new IdentifierType(n.i.s));
 
     }
     

@@ -4,7 +4,7 @@
 
 class TreeVisitor{
     public static void main(String[] a){
-	System.out.println(new TV().Start());
+		 System.out.println(new TV().Start());
     }
 }
 
@@ -19,7 +19,7 @@ class TV {
 	root = new Tree();
 	ntb = root.Init(16);
 	ntb = root.Print();
-	System.out.println(100000000);
+	// System.out.println(100000000);
 	ntb = root.Insert(8) ;
 	ntb = root.Insert(24) ;
 	ntb = root.Insert(4) ;
@@ -28,19 +28,19 @@ class TV {
 	ntb = root.Insert(28) ;
 	ntb = root.Insert(14) ;
 	ntb = root.Print();
-	System.out.println(100000000);
+	// System.out.println(100000000);
 	v = new MyVisitor();
-	System.out.println(50000000);
+	// System.out.println(50000000);
 	nti = root.accept(v);
-	System.out.println(100000000);
-	System.out.println(root.Search(24));
-	System.out.println(root.Search(12));
-	System.out.println(root.Search(16));
-	System.out.println(root.Search(50));
-	System.out.println(root.Search(12));
+	// System.out.println(100000000);
+	// System.out.println(root.Search(24));
+	// System.out.println(root.Search(12));
+	// System.out.println(root.Search(16));
+	// System.out.println(root.Search(50));
+	// System.out.println(root.Search(12));
 	ntb = root.Delete(12);
 	ntb = root.Print();
-	System.out.println(root.Search(12));
+	// System.out.println(root.Search(12));
 
 	return 0 ;
     }
@@ -309,7 +309,7 @@ class Tree{
 	if (node.GetHas_Left()){
 	    ntb = this.RecPrint(node.GetLeft());
 	} else ntb = true ;
-	System.out.println(node.GetKey());
+	// System.out.println(node.GetKey());
 	if (node.GetHas_Right()){
 	    ntb = this.RecPrint(node.GetRight());
 	} else ntb = true ;
@@ -319,7 +319,7 @@ class Tree{
     public int accept(Visitor v){
 	int nti ;
 
-	System.out.println(333);
+	// System.out.println(333);
 	nti = v.visit(this) ;
 	return 0 ;
     }
@@ -361,7 +361,7 @@ class MyVisitor extends Visitor {
 	    nti = r.accept(this) ; }
 	else nti = 0 ;
 
-	System.out.println(n.GetKey());
+	// System.out.println(n.GetKey());
 
 	if (n.GetHas_Left()) {
 	    l = n.GetLeft(); 

@@ -274,9 +274,10 @@ public class TranslationVisitor implements TypeTranslationVisitor {
 
     Translation.Temp.Label t = new Translation.Temp.Label();
     Translation.Temp.Label f = new Translation.Temp.Label();
+    Translation.Temp.Label d = new Translation.Temp.Label();
 
-    SEQ trueStm = new SEQ(new LABEL(t), stm1);
-    SEQ falseStm = new SEQ(new LABEL(f), stm2);
+    SEQ trueStm = new SEQ(new SEQ(new LABEL(t), stm1), new JUMP(d));
+    SEQ falseStm = new SEQ(new SEQ(new LABEL(f), stm2), new LABEL(d));
 
     CJUMP cjump = new CJUMP(CJUMP.EQ, exp.unEx(), new CONST(1), t, f);
 
@@ -338,9 +339,11 @@ public class TranslationVisitor implements TypeTranslationVisitor {
 
     Translation.Tree.Exp vector = getAccess(Symbol.symbol(n.i.toString()));
 
+
     MOVE arrStm = new MOVE(
-      new BINOP(BINOP.PLUS, new BINOP(BINOP.MUL, position.unEx(), new CONST(currFrame.wordSize())), new MEM(vector)),
+      new MEM(new BINOP(BINOP.PLUS, new BINOP(BINOP.MUL, position.unEx(), new CONST(currFrame.wordSize())), vector)),
             value.unEx());
+        
 
     return new TranslateExp(new ESEQ(arrStm, new CONST(0)));
   }
@@ -426,9 +429,9 @@ public class TranslationVisitor implements TypeTranslationVisitor {
 
     Translation.Tree.Exp arr = getAccess(Symbol.symbol(((IdentifierExp) n.e1).s));
     TranslateExp position = n.e2.accept(this);
+   return new TranslateExp(
+       new MEM(new BINOP(BINOP.PLUS, new BINOP(BINOP.MUL, position.unEx(), new CONST(currFrame.wordSize())), arr)));
 
-    return new TranslateExp(
-        new BINOP(BINOP.PLUS, new BINOP(BINOP.MUL, position.unEx(), new CONST(currFrame.wordSize())), new MEM(arr)));
   }
 
   // Exp e;

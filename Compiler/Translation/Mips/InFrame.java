@@ -1,7 +1,7 @@
 package Translation.Mips;
 
 public class InFrame extends Translation.Frame.Access {
-    int offset;
+    public int offset;
     InFrame(int o) {
 	offset = o;
     }

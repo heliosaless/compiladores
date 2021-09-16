@@ -1,6 +1,6 @@
 class LinkedList{
     public static void main(String[] a){
-	System.out.println(new LL().Start());
+	  System.out.println(new LL().Start());
     }
 }
 
@@ -136,9 +136,9 @@ class List{
 		    my_head = aux01.GetNext() ;
 		} 
 		else{ // delete a non first element
-		    System.out.println(0-555);
+		    // System.out.println(0-555);
 		    aux05 = prev.SetNext(aux01.GetNext());
-		    System.out.println(0-555);
+		    // System.out.println(0-555);
 		    
 		}
 	    } else nt = 0 ;
@@ -201,7 +201,7 @@ class List{
 	var_end = end ;
 	var_elem = elem ;
 	while (!var_end){
-	    System.out.println(var_elem.GetAge());
+	    // System.out.println(var_elem.GetAge());
 	    aux01 = aux01.GetNext() ;
 	    var_end = aux01.GetEnd();
 	    var_elem = aux01.GetElem();
@@ -236,14 +236,14 @@ class LL{
 	aux01 = el01.Init(25,37000,false);
 	head = head.Insert(el01);
 	aux01 = head.Print();
-	System.out.println(10000000);
+	// System.out.println(10000000);
 	// inserting second  element
 	el01 = new Element();
 	aux01 = el01.Init(39,42000,true);
 	el02 = el01 ;
 	head = head.Insert(el01);
 	aux01 = head.Print();
-	System.out.println(10000000);
+	// System.out.println(10000000);
 	// inserting third element
 	el01 = new Element();
 	aux01 = el01.Init(22,34000,false);
@@ -251,24 +251,24 @@ class LL{
 	aux01 = head.Print();
 	el03 = new Element();
 	aux01 = el03.Init(27,34000,false);
-	System.out.println(head.Search(el02));
-	System.out.println(head.Search(el03));
-	System.out.println(10000000);
+	// System.out.println(head.Search(el02));
+	// System.out.println(head.Search(el03));
+	// System.out.println(10000000);
 	// inserting fourth element
 	el01 = new Element();
 	aux01 = el01.Init(28,35000,false);
 	head = head.Insert(el01);
 	aux01 = head.Print();
-	System.out.println(2220000);
+	// System.out.println(2220000);
 
 	head = head.Delete(el02);
 	aux01 = head.Print();
-	System.out.println(33300000);
+	// System.out.println(33300000);
 
 
 	head = head.Delete(el01);
 	aux01 = head.Print();
-	System.out.println(44440000);
+	// System.out.println(44440000);
 	
 	return 0 ;
 	

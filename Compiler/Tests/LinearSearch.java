@@ -20,11 +20,11 @@ class LS {
 
 	aux01 = this.Init(sz);
 	aux02 = this.Print();
-	System.out.println(9999);
-	System.out.println(this.Search(8));
-	System.out.println(this.Search(12)) ;
-	System.out.println(this.Search(17)) ;
-	System.out.println(this.Search(50)) ;
+	// System.out.println(9999);
+	// System.out.println(this.Search(8));
+	// System.out.println(this.Search(12)) ;
+	// System.out.println(this.Search(17)) ;
+	// System.out.println(this.Search(50)) ;
 	return 55 ;
     }
 
@@ -34,7 +34,7 @@ class LS {
 
 	j = 1 ;
 	while (j < (size)) {
-	    System.out.println(number[j]);
+	    // System.out.println(number[j]);
 	    j = j + 1 ;
 	}
 	return 0 ;
@@ -54,7 +54,7 @@ class LS {
 	ls01 = false ;
 	ifound = 0 ;
 	
-	//System.out.println(num);
+	// System.out.println(num);
 	while (j < (size)) {
 	    aux01 = number[j] ;
 	    aux02 = num + 1 ;
